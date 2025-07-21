@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { assets, blogCategories } from '../../assets/assets';
 import Quill from 'quill';
+import 'quill/dist/quill.snow.css'; 
 import { useAppContext } from '../../context/AppContext';
 import { marked } from 'marked';
 import toast from 'react-hot-toast';
@@ -18,30 +19,28 @@ const AddBlog: React.FC = () => {
   const [category, setCategory] = useState('Startup');
   const [isPublished, setIsPublished] = useState(false);
 
-  const generateContent = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const generateContent = async () => {
     try {
+      if (!title) return toast.error('Please enter a blog title first!');
       setLoading(true);
-      if (!title) return toast.error('Please Enter Title');
 
       const { data } = await axios.post('/api/blog/generate', { prompt: title });
+
       if (data.success) {
-quillRef.current!.clipboard.dangerouslyPasteHTML(marked(data.content));
-      } else {  
+        const html = marked(data.content);
+        quillRef.current?.clipboard.dangerouslyPasteHTML(html);
+      } else {
         toast.error(data.message);
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error('An unexpected error occurred');
-      }
+    } catch (err) {
+      toast.error('Error generating content.');
     } finally {
       setLoading(false);
     }
   };
 
-  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+  // ✳️ Submit handler
+  const onSubmitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsAdding(true);
     try {
@@ -61,30 +60,29 @@ quillRef.current!.clipboard.dangerouslyPasteHTML(marked(data.content));
 
       if (data.success) {
         toast.success(data.message);
-        setImage(null);
+        // Reset all states
         setTitle('');
         setSubtitle('');
-        setIsPublished(false);
         setCategory('Startup');
+        setImage(null);
+        setIsPublished(false);
         quillRef.current?.setText('');
       } else {
         toast.error(data.message);
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message || 'Failed to add blog');
-      } else {
-        toast.error('Failed to add blog');
-      }
+    } catch (err) {
+      toast.error('Failed to add blog.');
     } finally {
       setIsAdding(false);
     }
   };
 
+  // ✳️ Initialize Quill on mount
   useEffect(() => {
-    if (!quillRef.current && editorRef.current) {
+    if (editorRef.current && !quillRef.current) {
       quillRef.current = new Quill(editorRef.current, {
         theme: 'snow',
+        placeholder: 'Write your blog here...',
       });
     }
   }, []);
@@ -95,7 +93,7 @@ quillRef.current!.clipboard.dangerouslyPasteHTML(marked(data.content));
       className='flex-1 bg-blue-50/50 text-gray-600 h-full overflow-scroll'
     >
       <div className='bg-white w-full max-w-3xl p-4 md:p-10 sm:m-10 shadow rounded'>
-        <p>Upload thumbnail</p>
+        <p>Upload Thumbnail</p>
         <label htmlFor='image'>
           <img
             src={!image ? assets.upload_area : URL.createObjectURL(image)}
@@ -114,7 +112,7 @@ quillRef.current!.clipboard.dangerouslyPasteHTML(marked(data.content));
           />
         </label>
 
-        <p className='mt-4'>Blog title</p>
+        <p className='mt-4'>Blog Title</p>
         <input
           type='text'
           placeholder='Type here'
@@ -141,23 +139,22 @@ quillRef.current!.clipboard.dangerouslyPasteHTML(marked(data.content));
             disabled={loading}
             type='button'
             onClick={generateContent}
-            className='absolute bottom-1 right-2 ml-2 text-sx bg-gradient-to-r from-blue-500 to-purple-500 text-white  px-4 py-1.5 rounded hover:underline cursor-pointer'
+            className='absolute bottom-1 right-2 ml-2 text-sm bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-1.5 rounded hover:underline cursor-pointer'
           >
-            {loading ? "Generating Blog.....":"Generate with AI"}
+            {loading ? 'Generating...' : 'Generate with AI'}
           </button>
         </div>
 
         <p className='mt-4'>Blog Category</p>
         <select
-          name='category'
           className='mt-2 px-3 py-2 border text-gray-500 border-gray-300 outline-none rounded'
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         >
           <option value=''>Select Category</option>
-          {blogCategories.map((item, index) => (
-            <option key={index} value={item}>
-              {item}
+          {blogCategories.map((cat, index) => (
+            <option key={index} value={cat}>
+              {cat}
             </option>
           ))}
         </select>

@@ -7,10 +7,10 @@ import { useAppContext } from "../context/AppContext";
 interface Blog {
   _id: string;
   title: string;
+  description: string;
+  image: string;
   category: string;
 }
-
-
 
 const BlogList: React.FC = () => {
   const [menu, setMenu] = useState<string>("All");
@@ -20,27 +20,26 @@ const BlogList: React.FC = () => {
   const { blogs, input } = useAppContext();
 
   const filterBlogs = (): Blog[] => {
-  let filtered = blogs;
+    let filtered = blogs;
 
-  if (input.trim() !== "") {
-    const lowerInput = input.toLowerCase();
-    filtered = filtered.filter(
-      (blog: Blog) =>
-        (blog.title && blog.title.toLowerCase().includes(lowerInput)) ||
-        (blog.category && blog.category.toLowerCase().includes(lowerInput))
-    );
-  }
+    if (input.trim() !== "") {
+      const lowerInput = input.toLowerCase();
+      filtered = filtered.filter((blog: Blog) => {
+        const matchesTitle = blog.title?.toLowerCase().includes(lowerInput);
+        const matchesCategory = blog.category?.toLowerCase().includes(lowerInput);
+        return matchesTitle || matchesCategory;
+      });
+    }
 
-  if (menu !== "All") {
-    const lowerMenu = menu.toLowerCase();
-    filtered = filtered.filter(
-      (blog: Blog) => blog.category && blog.category.toLowerCase() === lowerMenu
-    );
-  }
+    if (menu !== "All") {
+      const lowerMenu = menu.toLowerCase();
+      filtered = filtered.filter(
+        (blog: Blog) => blog.category?.toLowerCase() === lowerMenu
+      );
+    }
 
-  return filtered;
-};
-
+    return filtered;
+  };
 
   const filteredBlogs = filterBlogs();
   const totalPages = Math.ceil(filteredBlogs.length / blogsPerPage);
@@ -54,7 +53,7 @@ const BlogList: React.FC = () => {
 
   const handleMenuChange = (item: string) => {
     setMenu(item);
-    setCurrentPage(1); // Reset page on category change
+    setCurrentPage(1); 
   };
 
   return (

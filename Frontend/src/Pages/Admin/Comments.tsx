@@ -19,9 +19,11 @@ interface CommentType {
 const Comments: React.FC = () => {
   const [comments, setComments] = useState<CommentType[]>([]);
   const [filter, setFilter] = useState<'Approved' | 'Not Approved'>('Not Approved');
+  const [loading, setLoading] = useState<boolean>(false);
   const { axios } = useAppContext();
 
   const fetchComments = async () => {
+    setLoading(true);
     try {
       const { data } = await axios.get('/api/comment/all-comment');
       if (data.success) {
@@ -35,12 +37,18 @@ const Comments: React.FC = () => {
       } else {
         toast.error('An unexpected error occurred');
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchComments();
   }, []);
+
+  const filteredComments = comments.filter((comment) =>
+    filter === 'Approved' ? comment.isApproved : !comment.isApproved
+  );
 
   return (
     <div className="flex-1 pt-5 px-5 sm:pt-12 sm:pl-16 bg-blue-50/50">
@@ -59,9 +67,7 @@ const Comments: React.FC = () => {
           <button
             onClick={() => setFilter('Not Approved')}
             className={`border rounded-full px-4 py-1 cursor-pointer text-xs ${
-              filter === 'Not Approved'
-                ? 'text-primary border-primary'
-                : 'text-gray-700 border-gray-300'
+              filter === 'Not Approved' ? 'text-primary border-primary' : 'text-gray-700 border-gray-300'
             }`}
           >
             Not Approved
@@ -71,36 +77,39 @@ const Comments: React.FC = () => {
 
       {/* Table */}
       <div className="relative h-4/5 max-w-3xl overflow-x-auto mt-4 bg-white shadow rounded-lg scrollbar-hide">
-        <table className="w-full text-sm text-gray-500">
-          <thead className="text-xs text-gray-700 text-left uppercase bg-gray-50">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                Blog Title & Comment
-              </th>
-              <th scope="col" className="px-6 py-3 max-sm:hidden">
-                Date
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {comments
-              .filter((comment) =>
-                filter === 'Approved' ? comment.isApproved : !comment.isApproved
-              )
-              .map((comment) => (
-                <CommentTableItems
-                  key={comment._id}
-                  comment={comment}
-                  fetchComments={fetchComments}
-                />
-              ))}
-          </tbody>
-        </table>
-        {comments.length === 0 && (
-          <p className="text-center text-gray-400 py-6">No comments found.</p>
+        {loading ? (
+          <p className="text-center text-gray-400 py-6">Loading comments...</p>
+        ) : (
+          <>
+            <table className="w-full text-sm text-gray-500">
+              <thead className="text-xs text-gray-700 text-left uppercase bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3">
+                    Blog Title & Comment
+                  </th>
+                  <th scope="col" className="px-6 py-3 max-sm:hidden">
+                    Date
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredComments.map((comment) => (
+                  <CommentTableItems
+                    key={comment._id}
+                    comment={comment}
+                    fetchComments={fetchComments}
+                  />
+                ))}
+              </tbody>
+            </table>
+
+            {filteredComments.length === 0 && (
+              <p className="text-center text-gray-400 py-6">No {filter.toLowerCase()} comments found.</p>
+            )}
+          </>
         )}
       </div>
     </div>

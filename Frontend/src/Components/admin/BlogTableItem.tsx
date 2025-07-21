@@ -1,5 +1,4 @@
 import React from 'react';
-import { assets } from '../../assets/assets';
 import { useAppContext } from '../../context/AppContext';
 import toast from 'react-hot-toast';
 import { RiDeleteBin6Line } from "react-icons/ri";
