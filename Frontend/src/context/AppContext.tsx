@@ -81,8 +81,9 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         } else {
           setIsLogin(false);
         }
-      } catch (error) {
+      } catch (error ) {
         setIsLogin(false);
+        console.log(error)
       }
     };
     checkAuth();

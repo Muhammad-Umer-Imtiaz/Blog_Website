@@ -34,7 +34,7 @@ const AddBlog: React.FC = () => {
         toast.error(data.message);
       }
     } catch (err) {
-      toast.error('Error generating content.');
+      toast.error('Error generating content.' + err);
     } finally {
       setLoading(false);
     }
@@ -72,7 +72,7 @@ const AddBlog: React.FC = () => {
         toast.error(data.message);
       }
     } catch (err) {
-      toast.error('Failed to add blog.');
+      toast.error('Failed to add blog.' + err);
     } finally {
       setIsAdding(false);
     }

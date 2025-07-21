@@ -36,8 +36,8 @@ const BlogTableItem: React.FC<BlogTableItemProps> = ({ blog, fetchBlogs, index }
       } else {
         toast.error(data.error || 'Failed to delete blog');
       }
-    } catch (error: any) {
-      toast.error(error.message || 'Something went wrong');
+    } catch (error) {
+      toast.error( 'Something went wrong '+ error);
     }
   };
 
@@ -51,8 +51,8 @@ const BlogTableItem: React.FC<BlogTableItemProps> = ({ blog, fetchBlogs, index }
       } else {
         toast.error(data.error || 'Failed to toggle publish status');
       }
-    } catch (error: any) {
-      toast.error(error.message || 'Something went wrong');
+    } catch (error) {
+      toast.error( 'Something went wrong' + error);
     }
   };
 

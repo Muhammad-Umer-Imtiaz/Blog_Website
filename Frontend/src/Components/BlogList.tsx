@@ -4,8 +4,6 @@ import { motion } from "framer-motion";
 import BlogCard from "./BlogCard";
 import { useAppContext } from "../context/AppContext";
 
-// Remove local interface completely and use the one from AppContext
-// This prevents type conflicts
 
 const BlogList: React.FC = () => {
   const [menu, setMenu] = useState<string>("All");
@@ -15,8 +13,7 @@ const BlogList: React.FC = () => {
   const { blogs, input } = useAppContext();
 
   const filterBlogs = () => {
-    let filtered = blogs; // Remove type assertion - use context type directly
-
+    let filtered = blogs;
     if (input.trim() !== "") {
       const lowerInput = input.toLowerCase();
       filtered = filtered.filter((blog) => {
