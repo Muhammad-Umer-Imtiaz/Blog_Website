@@ -10,8 +10,8 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 // Set Axios base URL and credentials
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL || "http://localhost:5000";
-axios.defaults.withCredentials = true; // Ensure cookies are sent with requests
+axios.defaults.baseURL = "https://blogbreezebackend.onrender.com";
+axios.defaults.withCredentials = true;
 
 // Define Blog type (adjust fields as per your API)
 interface Blog {
