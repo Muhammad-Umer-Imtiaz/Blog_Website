@@ -3,13 +3,26 @@ import CommentTableItems from '../../Components/admin/CommentTableitems';
 import { useAppContext } from '../../context/AppContext';
 import toast from 'react-hot-toast';
 
+// Updated interface to match what your API actually returns
 interface Blog {
+  _id?: string;
   title: string;
 }
 
+// Comment interface that matches what's expected by CommentTableItems
+interface Comment {
+  _id: string;
+  blog: string; // Changed from Blog object to string
+  name: string;
+  content: string;
+  createdAt: string;
+  isApproved: boolean;
+}
+
+// Keep CommentType for API response (if it comes as object)
 interface CommentType {
   _id: string;
-  blog: Blog;
+  blog: Blog | string; // Can be either object or string
   name: string;
   content: string;
   createdAt: string;
@@ -17,7 +30,7 @@ interface CommentType {
 }
 
 const Comments: React.FC = () => {
-  const [comments, setComments] = useState<CommentType[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [filter, setFilter] = useState<'Approved' | 'Not Approved'>('Not Approved');
   const [loading, setLoading] = useState<boolean>(false);
   const { axios } = useAppContext();
@@ -27,7 +40,12 @@ const Comments: React.FC = () => {
     try {
       const { data } = await axios.get('/api/comment/all-comment');
       if (data.success) {
-        setComments(data.comments);
+        // Transform the data to match expected format
+        const transformedComments: Comment[] = data.comments.map((comment: CommentType) => ({
+          ...comment,
+          blog: typeof comment.blog === 'string' ? comment.blog : comment.blog.title
+        }));
+        setComments(transformedComments);
       } else {
         toast.error(data.message || 'Failed to fetch comments');
       }

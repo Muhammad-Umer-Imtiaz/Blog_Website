@@ -4,12 +4,18 @@ import { motion } from "framer-motion";
 import BlogCard from "./BlogCard";
 import { useAppContext } from "../context/AppContext";
 
+// Remove the local interface and use the one from context
+// or create a comprehensive interface that matches your actual data
 interface Blog {
   _id: string;
   title: string;
-  description: string;
-  image: string;
-  category: string;
+  description?: string;  // Make optional to handle missing properties
+  image?: string;        // Make optional to handle missing properties
+  category?: string;     // Make optional to handle missing properties
+  subTitle?: string;     // Add any other properties your blog might have
+  isPublished?: boolean;
+  createdAt?: string;
+  author?: string;
 }
 
 const BlogList: React.FC = () => {
@@ -20,7 +26,7 @@ const BlogList: React.FC = () => {
   const { blogs, input } = useAppContext();
 
   const filterBlogs = (): Blog[] => {
-    let filtered = blogs;
+    let filtered = blogs as Blog[]; // Type assertion to match our interface
 
     if (input.trim() !== "") {
       const lowerInput = input.toLowerCase();

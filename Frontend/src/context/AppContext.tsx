@@ -4,8 +4,8 @@ import {
   useContext,
   useEffect,
   useState,
-  ReactNode,
 } from "react";
+import type { ReactNode } from "react"; // Fixed: type-only import
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -13,14 +13,19 @@ import { useNavigate } from "react-router-dom";
 axios.defaults.baseURL = "https://blogbreezebackend.onrender.com";
 axios.defaults.withCredentials = true;
 
-// Define Blog type (adjust fields as per your API)
+// Define Blog type with all the properties your app uses
 interface Blog {
   _id: string;
   title: string;
-  content: string;
-  author: string;
+  content?: string;
+  description?: string; // Added missing properties
+  image?: string;       // Added missing properties
+  category?: string;    // Added missing properties
+  subTitle?: string;
+  author?: string;
+  isPublished?: boolean;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
 // Context type with proper Blog typing
@@ -67,22 +72,21 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   };
 
   // Check auth on mount
- useEffect(() => {
-  const checkAuth = async () => {
-    try {
-      const { data } = await axios.get("/api/admin/check-auth");
-      if (data.success) {
-        setIsLogin(true);
-      } else {
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data } = await axios.get("/api/admin/check-auth");
+        if (data.success) {
+          setIsLogin(true);
+        } else {
+          setIsLogin(false);
+        }
+      } catch (error) {
         setIsLogin(false);
       }
-    } catch (error) {
-      setIsLogin(false);
-    }
-  };
-  checkAuth();
-}, []);
-
+    };
+    checkAuth();
+  }, []);
 
   // Fetch blogs once on mount
   useEffect(() => {

@@ -27,7 +27,8 @@ const AddBlog: React.FC = () => {
       const { data } = await axios.post('/api/blog/generate', { prompt: title });
 
       if (data.success) {
-        const html = marked(data.content);
+        // Fix: await the marked function since it returns a Promise<string>
+        const html = await marked(data.content);
         quillRef.current?.clipboard.dangerouslyPasteHTML(html);
       } else {
         toast.error(data.message);
