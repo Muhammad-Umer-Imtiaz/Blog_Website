@@ -29,9 +29,8 @@ const Login = () => {
       } else {
         toast.error(data.message || "Login failed");
       }
-    } catch (error: any) {
-      console.error("Login error:", error.message, error.response?.data);
-      toast.error(error.response?.data?.message || error.message || "Login failed");
+    } catch (error) {
+      toast.error("Login failed " + error);
     }
   };
 

@@ -23,14 +23,15 @@ export const adminLogin = async (req: Request, res: Response): Promise<void> => 
 
     // Send cookie with response
     res
-      .status(200)
-      .cookie('token', token, {
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        httpOnly: true,
-        sameSite: 'none',
-        secure: process.env.NODE_ENV !== 'development',
-      })
-      .json({ message: 'Login successful', success:true,token });
+  .status(200)
+  .cookie('token', token, {
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    sameSite: 'none',
+    secure: process.env.NODE_ENV == 'production', // ← fixed this line
+  })
+  .json({ message: 'Login successful', success: true, token });
+
   } catch (error) {
     res.status(500).json({success:false, message: 'Internal server error' });
   }
