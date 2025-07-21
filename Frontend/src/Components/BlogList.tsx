@@ -4,19 +4,8 @@ import { motion } from "framer-motion";
 import BlogCard from "./BlogCard";
 import { useAppContext } from "../context/AppContext";
 
-// Remove the local interface and use the one from context
-// or create a comprehensive interface that matches your actual data
-interface Blog {
-  _id: string;
-  title: string;
-  description?: string;  // Make optional to handle missing properties
-  image?: string;        // Make optional to handle missing properties
-  category?: string;     // Make optional to handle missing properties
-  subTitle?: string;     // Add any other properties your blog might have
-  isPublished?: boolean;
-  createdAt?: string;
-  author?: string;
-}
+// Remove local interface completely and use the one from AppContext
+// This prevents type conflicts
 
 const BlogList: React.FC = () => {
   const [menu, setMenu] = useState<string>("All");
@@ -25,12 +14,12 @@ const BlogList: React.FC = () => {
 
   const { blogs, input } = useAppContext();
 
-  const filterBlogs = (): Blog[] => {
-    let filtered = blogs as Blog[]; // Type assertion to match our interface
+  const filterBlogs = () => {
+    let filtered = blogs; // Remove type assertion - use context type directly
 
     if (input.trim() !== "") {
       const lowerInput = input.toLowerCase();
-      filtered = filtered.filter((blog: Blog) => {
+      filtered = filtered.filter((blog) => {
         const matchesTitle = blog.title?.toLowerCase().includes(lowerInput);
         const matchesCategory = blog.category?.toLowerCase().includes(lowerInput);
         return matchesTitle || matchesCategory;
@@ -40,7 +29,7 @@ const BlogList: React.FC = () => {
     if (menu !== "All") {
       const lowerMenu = menu.toLowerCase();
       filtered = filtered.filter(
-        (blog: Blog) => blog.category?.toLowerCase() === lowerMenu
+        (blog) => blog.category?.toLowerCase() === lowerMenu
       );
     }
 
@@ -90,7 +79,7 @@ const BlogList: React.FC = () => {
 
       {/* Blog Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-8 lg:px-16">
-        {currentBlogs.map((blog: Blog) => (
+        {currentBlogs.map((blog) => (
           <BlogCard key={blog._id} blog={blog} />
         ))}
       </div>
