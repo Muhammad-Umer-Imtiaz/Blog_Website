@@ -105,9 +105,8 @@ const Blog: React.FC = () => {
             <h1 className="text-2xl sm:text-5xl font-semibold max-w-2xl mx-auto text-gray-800">
               {data.title}
             </h1>
-            <h2 className="my-5 max-w-lg truncate mx-auto">{data.subtitle}</h2>
-            <p className="inline-block py-2 px-4 rounded-full mb-6 border text-white bg-gradient-to-r from-blue-500 to-purple-500 font-medium text-sm">
-              {data.subtitle}
+           <p className="inline-block py-2 px-4 rounded-full mb-6 border text-white bg-gradient-to-r from-blue-500 to-purple-500 font-medium text-sm">
+              {data.subTitle}
             </p>
           </div>
           <div className="mx-5 max-w-5xl  md:mx-auto my-10 mt-6 z-10 relative">
