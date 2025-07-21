@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 interface BlogPost {
   _id: string;
   title: string;
-  subtitle: string;
+  subTitle: string;
   createdAt: string;
   image: string;
   description: string;
@@ -69,7 +69,6 @@ const Blog: React.FC = () => {
         name,
         content,
       });
-      console.log(data)
 
       if (data.success) {
         setFormData({ name: '', content: '' });
@@ -102,10 +101,10 @@ const Blog: React.FC = () => {
             <p className="py-4 font-medium bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
               Published on {Moment(data.createdAt).format('MMMM Do YYYY')}
             </p>
-            <h1 className="text-2xl sm:text-5xl font-semibold max-w-2xl mx-auto text-gray-800">
+            <h1 className="text-2xl sm:text-5xl font-semibold max-w-2xl mx-auto text-gray-800 mb-8">
               {data.title}
             </h1>
-           <p className="inline-block py-2 px-4 rounded-full mb-6 border text-white bg-gradient-to-r from-blue-500 to-purple-500 font-medium text-sm">
+           <p className="inline-block py-2 px-4 rounded-full mb-4 border text-white bg-gradient-to-r from-blue-500 to-purple-500 font-medium text-sm">
               {data.subTitle}
             </p>
           </div>
