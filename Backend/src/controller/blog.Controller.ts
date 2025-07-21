@@ -7,10 +7,10 @@ import main from "../config/gemini";
 
 export const addBlog = async (req: Request, res: Response): Promise<void> => {
   try {
-   
 
-    const blogData = JSON.parse(req.body.blog); // ✅ Correct
-    const { title, subTitle, description, category, isPublished } = blogData; // ✅ Use blogData, not req.body
+
+    const blogData = JSON.parse(req.body.blog);
+    const { title, subTitle, description, category, isPublished } = blogData; // 
 
     const image = req.file;
 
@@ -141,7 +141,7 @@ export const deleteBlogById = async (req: Request, res: Response): Promise<void>
 export const generateContent = async (req: Request, res: Response): Promise<void> => {
   try {
     const { prompt } = req.body;
-    const content = await main(prompt + 'Generate a blog for this topic in simple text format and Make sure blog length is more than 1500 word')
+    const content = await main(prompt + 'Generate a blog for this topic in simple text format ')
     res.status(200).json({ success: true, content })
   } catch (error) {
     res.status(500).json({ success: false, message: "internal server issue" })
